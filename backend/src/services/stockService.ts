@@ -5,6 +5,16 @@ class StockService {
 
   async fetchStocksList() {
     try {
+      const coinList = await Stock.find({}, { prices: { $slice: 1 } });
+      return coinList;
+    } catch (error: any) {
+      logger.error(`Error while fetching coins list: ${error.message}`);
+      throw new Error(error.message);
+    }
+  }
+
+  async syncStockList() {
+    try {
       const response = await apiClient.get(`/markets?vs_currency=usd&per_page=2&page=1`);
       const bulkOps = response.data.map((stockData: any) => {
         return {
@@ -30,21 +40,12 @@ class StockService {
           },
         };
       });
-      await Stock.bulkWrite(bulkOps); 
-      return response.data.map((stockData: any) => ({
-        app_id: stockData.id,
-        symbol: stockData.symbol,
-        name: stockData.name,
-        image: stockData.image,
-        current_price: stockData.current_price,
-        last_updated: stockData.last_updated
-      }));
+      return await Stock.bulkWrite(bulkOps);
     } catch (error:any) {
       logger.error(`Error while fetching coins list: ${error.message}`);
       throw new Error(error.message);
     }
   }
-
 
   async getStockPrices(symbol: string) {
     try {
