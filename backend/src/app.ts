@@ -1,17 +1,13 @@
 import express from 'express';
-import morgan from 'morgan';
-import { logger } from './config/loggerConfig';
 import connectDB from './config/dbConfig';
 import stockRoutes from './routes/stockRoutes';
 import { assignRequestId, logRequest } from './middleware/loggerMiddleware';
+import errorHandlerMiddleware from './middleware/errorMiddleware';
 const app = express();
 // Middleware
 app.use(express.json());
-app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
 app.use(assignRequestId);
 app.use(logRequest);
-
-
 // Routes
 app.get("/health-check", (req, res) => {
     res.json("ALL GOOD");
@@ -19,7 +15,8 @@ app.get("/health-check", (req, res) => {
 
 app.use('/api', stockRoutes);
 
-
+// Error handling middleware
+app.use(errorHandlerMiddleware);
 // Connect to MongoDB
 connectDB();
 export default app;

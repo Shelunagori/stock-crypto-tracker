@@ -1,7 +1,6 @@
 import Stock from '../models/stockModel';
 import apiClient from '../utils/apiClient';
 import { logger } from '../config/loggerConfig';
-
 class StockService {
 
   async fetchStocksList() {
