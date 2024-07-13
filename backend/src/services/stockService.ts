@@ -5,17 +5,36 @@ class StockService {
 
   async fetchStocksList() {
     try {
-      const response = await apiClient.get(`/markets?vs_currency=usd&per_page=100&page=1`);
-      const stocksData = response.data.map((item: any) => ({
-        api_id: item.id,
-        name: item.name,
-        image: item.image,
-        symbol: item.symbol,
-        current_price: item.current_price,
-        last_updated: item.last_updated
+      const response = await apiClient.get(`/markets?vs_currency=usd&per_page=3&page=1`);
+      const bulkOps = response.data.map((stockData:any) => {
+        return {
+          updateOne: {
+            filter: { api_id: stockData.id },
+            update: {
+              $set: {
+                current_price: stockData.current_price,
+                last_updated: new Date(stockData.last_updated)
+              },
+              $setOnInsert: {
+                api_id: stockData.id,
+                name: stockData.name,
+                image: stockData.image,
+                symbol: stockData.symbol
+              }
+            },
+            upsert: true
+          }
+        };
+      });
+      await Stock.bulkWrite(bulkOps); 
+      return response.data.map((stockData: any) => ({
+        app_id: stockData.id,
+        symbol: stockData.symbol,
+        name: stockData.name,
+        image: stockData.image,
+        current_price: stockData.current_price,
+        last_updated: stockData.last_updated
       }));
-      await Stock.insertMany(stocksData);    
-      return stocksData;
     } catch (error:any) {
       throw new Error(error.message);
     }
