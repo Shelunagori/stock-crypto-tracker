@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { logger } from '../config/loggerConfig';
 import StockService from '../services/stockService';
 class StockController {
   
@@ -7,6 +8,7 @@ class StockController {
       const stock = await StockService.fetchStocksList();
       res.json(stock);
     } catch (error : any) {
+        logger.error(`Error while fetching coins list: ${error.message}`);
         throw new Error(error.message);
     }
   }

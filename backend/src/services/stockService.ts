@@ -1,11 +1,12 @@
 import Stock from '../models/stockModel';
 import apiClient from '../utils/apiClient';
+import { logger } from '../config/loggerConfig';
 
 class StockService {
 
   async fetchStocksList() {
     try {
-      const response = await apiClient.get(`/markets?vs_currency=usd&per_page=3&page=1`);
+      const response = await apiClient.get(`/markets?vs_currency=usd&per_page=100&page=1`);
       const bulkOps = response.data.map((stockData:any) => {
         return {
           updateOne: {
@@ -36,6 +37,7 @@ class StockService {
         last_updated: stockData.last_updated
       }));
     } catch (error:any) {
+      logger.error(`Error while fetching coins list: ${error.message}`);
       throw new Error(error.message);
     }
   }
@@ -45,7 +47,8 @@ class StockService {
     try {
       const stocks = await Stock.find({ symbol }).sort({ timestamp: -1 }).limit(20);
       return stocks;
-    } catch (error) {
+    } catch (error:any) {
+      logger.error(`Error while getting coin price: ${error.message}`);
       throw new Error('Unable to get stock prices');
     }
   }
