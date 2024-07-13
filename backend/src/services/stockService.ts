@@ -5,25 +5,29 @@ class StockService {
 
   async fetchStocksList() {
     try {
-      const response = await apiClient.get(`/markets?vs_currency=usd&per_page=100&page=1`);
-      const bulkOps = response.data.map((stockData:any) => {
+      const response = await apiClient.get(`/markets?vs_currency=usd&per_page=2&page=1`);
+      const bulkOps = response.data.map((stockData: any) => {
         return {
           updateOne: {
             filter: { api_id: stockData.id },
             update: {
               $set: {
-                current_price: stockData.current_price,
-                last_updated: new Date(stockData.last_updated)
-              },
-              $setOnInsert: {
-                api_id: stockData.id,
                 name: stockData.name,
                 image: stockData.image,
-                symbol: stockData.symbol
-              }
+                symbol: stockData.symbol,
+              },
+              $push: {
+                prices: {
+                  $each: [{
+                    current_price: stockData.current_price,
+                    last_updated: new Date(stockData.last_updated),
+                  }],
+                  $position: 0,
+                },
+              },
             },
-            upsert: true
-          }
+            upsert: true,
+          },
         };
       });
       await Stock.bulkWrite(bulkOps); 
@@ -44,10 +48,14 @@ class StockService {
 
   async getStockPrices(symbol: string) {
     try {
-      const stocks = await Stock.find({ symbol }).sort({ timestamp: -1 }).limit(20);
-      return stocks;
-    } catch (error:any) {
-      logger.error(`Error while getting coin price: ${error.message}`);
+      const stock = await Stock.findOne({ symbol });
+      if (!stock) {
+        throw new Error('Stock not found');
+      }
+      stock.prices = stock.prices.slice(0, 20);
+      return stock;
+    } catch (error: any) {
+      logger.error(`Error while getting stock prices: ${error.message}`);
       throw new Error('Unable to get stock prices');
     }
   }
