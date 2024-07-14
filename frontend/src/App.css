@@ -1,0 +1,53 @@
+body {
+  font-size: 14px;
+}
+
+table {
+  font-size: 14px;
+}
+
+.stock-table .name-th-td {
+  width: 30%;
+  text-align: left !important;
+  font-weight: 600;
+}
+
+.stock-table .table-decimal,
+.stock-index {
+  width: 4%;
+  text-align: left !important;
+}
+
+.stock-img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.stock-table th,
+.stock-table td {
+  text-align: right !important;
+}
+
+.stock-table td,
+.stock-table th {
+  padding: 18px 20px !important;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+.ss-table-wrapper {
+  height: calc(100vh - 350px);
+}
+
+.stock-menu {
+  height: 300px;
+  overflow-y: auto;
+}
+
+
+.stock-modal-body {
+  min-height: calc(100vh - 260px);
+}

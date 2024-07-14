@@ -1,10 +1,14 @@
 import express from 'express';
+import cors from 'cors';
 import connectDB from './config/dbConfig';
 import stockRoutes from './routes/stockRoutes';
 import { assignRequestId, logRequest } from './middleware/loggerMiddleware';
 import errorHandlerMiddleware from './middleware/errorMiddleware';
 const app = express();
 // Middleware
+app.use(cors({
+    origin: 'http://localhost:3000'
+}));
 app.use(express.json());
 app.use(assignRequestId);
 app.use(logRequest);
