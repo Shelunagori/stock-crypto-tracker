@@ -5,7 +5,7 @@ class StockService {
 
   async fetchStocksList() {
     try {
-      const coinList = await Stock.find({}, { prices: { $slice: 1 } });
+      const coinList = await Stock.find({}, { prices: { $slice: 20 } });
       return coinList;
     } catch (error: any) {
       logger.error(`Error while fetching coins list: ${error.message}`);
@@ -15,7 +15,8 @@ class StockService {
 
   async syncStockList() {
     try {
-      const response = await apiClient.get(`/markets?vs_currency=usd&per_page=100&page=1`);
+      console.log("CRON date & time ",    new Date().toLocaleDateString(),  new Date().toLocaleTimeString())
+      const response = await apiClient.get(`/markets?vs_currency=usd&per_page=50&page=1`);
       const bulkOps = response.data.map((stockData: any) => {
         return {
           updateOne: {
@@ -30,7 +31,7 @@ class StockService {
                 prices: {
                   $each: [{
                     current_price: stockData.current_price,
-                    last_updated: new Date(stockData.last_updated),
+                    last_updated: stockData.last_updated,
                   }],
                   $position: 0,
                 },

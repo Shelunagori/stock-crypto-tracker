@@ -17,7 +17,18 @@ const SingleStockTable = ({ selectedStockItem }) => {
               <>
                 <tr key={priceItem._id}>
                   <td className="stock-index">{index + 1}</td>
-                  <td>{new Date(priceItem.last_updated).toLocaleString()}</td>
+                  <td>
+                    {new Date(priceItem.last_updated).toLocaleString("en-US", {
+                      hour12: true,
+                      hour: "numeric",
+                      minute: "numeric",
+                      second: "numeric",
+                      millisecond: "numeric",
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                    })}
+                  </td>
                   <td>{priceItem.current_price}</td>
                 </tr>
               </>

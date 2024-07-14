@@ -39,7 +39,19 @@ const DataTable = () => {
                 <td>{entry.symbol}</td>
                 <td>{entry.prices[0].current_price}</td>
                 <td>
-                  {new Date(entry.prices[0].last_updated).toLocaleString()}
+                  {new Date(entry.prices[0].last_updated).toLocaleString(
+                    "en-US",
+                    {
+                      hour12: true,
+                      hour: "numeric",
+                      minute: "numeric",
+                      second: "numeric",
+                      millisecond: "numeric",
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                    }
+                  )}
                 </td>
               </tr>
             ))}
