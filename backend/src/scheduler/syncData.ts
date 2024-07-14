@@ -3,7 +3,7 @@ import StockService from '../services/stockService';
 import { logger } from '../config/loggerConfig';
 
 export function initializeScheduler() {
-    cron.schedule('* * * * *', async () => {
+    cron.schedule('0 */5 * * * *', async () => {
         try {
             await StockService.syncStockList();
         } catch (error: any) {
