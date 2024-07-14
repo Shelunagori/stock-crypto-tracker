@@ -15,7 +15,7 @@ class StockService {
 
   async syncStockList() {
     try {
-      const response = await apiClient.get(`/markets?vs_currency=usd&per_page=2&page=1`);
+      const response = await apiClient.get(`/markets?vs_currency=usd&per_page=100&page=1`);
       const bulkOps = response.data.map((stockData: any) => {
         return {
           updateOne: {
