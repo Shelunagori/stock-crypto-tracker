@@ -14,8 +14,7 @@ class StockService {
   }
 
   async syncStockList() {
-    try {
-      console.log("CRON date & time ",    new Date().toLocaleDateString(),  new Date().toLocaleTimeString())
+    try {      
       const response = await apiClient.get(`/markets?vs_currency=usd&per_page=50&page=1`);
       const bulkOps = response.data.map((stockData: any) => {
         return {

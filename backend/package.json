@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "dist/server.js",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "ts-node src/server.ts",
+    "seed": "ts-node db-script/seed.ts",
     "dev": "nodemon --exec ts-node src/server.ts",
     "build": "tsc -p .",
     "test": "echo \"Error: no test specified\" && exit 1"
